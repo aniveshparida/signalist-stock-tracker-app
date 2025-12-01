@@ -36,8 +36,11 @@ const SignUp = ()=>{
             const result =await signUpWithEmail(data);
             if(result.success){
                 toast.success('Account created successfully!');
-                router.push('/');
-                router.refresh();
+                // Add a slight delay before redirecting to ensure auth state is updated
+                setTimeout(() => {
+                    router.push('/');
+                    router.refresh();
+                }, 500);
             } else {
                 toast.error('Sign up failed', {
                     description: result.error || 'Failed to create an account'

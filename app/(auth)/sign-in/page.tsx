@@ -28,8 +28,11 @@ const SignIn =()=>{
             const result=await signInWithEmail(data);
             if(result.success){
                 toast.success('Signed in successfully!');
-                router.push('/');
-                router.refresh();
+                // Add a slight delay before redirecting to ensure auth state is updated
+                setTimeout(() => {
+                    router.push('/');
+                    router.refresh();
+                }, 500);
             } else {
                 const message = result.errorCode === 'USER_NOT_FOUND'
                     ? 'This account does not exist. Please sign up first.'
