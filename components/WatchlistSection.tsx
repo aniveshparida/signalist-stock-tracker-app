@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Link from "next/link";
 import SearchCommand from "@/components/SearchCommand";
 import { searchStocks } from "@/lib/actions/finnhub.action";
