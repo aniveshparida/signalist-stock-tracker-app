@@ -304,6 +304,51 @@ export const NEWS_SUMMARY_EMAIL_TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`;
 
+export const WATCHLIST_DIGEST_EMAIL_TEMPLATE = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Daily Watchlist</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #050505; color: #F3F4F6; }
+        .container { max-width: 640px; margin: 0 auto; background-color: #141414; border-radius: 10px; border: 1px solid #30333A; overflow: hidden; }
+        .header { padding: 32px 32px 16px; text-align: center; border-bottom: 1px solid #30333A; }
+        .title { margin: 0; font-size: 24px; font-weight: 600; color: #FDD458; }
+        .subtitle { margin: 8px 0 0; color: #9CA3AF; font-size: 14px; }
+        .content { padding: 24px 32px 32px; }
+        .salutation { font-size: 16px; margin-bottom: 16px; color: #E5E7EB; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th { text-align: left; padding: 12px; background-color: #1F1F1F; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; }
+        td { padding: 14px 12px; border-bottom: 1px solid #232323; font-size: 15px; color: #F3F4F6; }
+        tr:nth-child(even) td { background-color: #1A1A1A; }
+        .empty { text-align: center; padding: 32px 16px; color: #9CA3AF; border: 1px dashed #30333A; border-radius: 8px; margin-top: 16px; }
+        .cta { display: inline-block; margin-top: 28px; padding: 14px 28px; border-radius: 9999px; background: linear-gradient(135deg, #FDD458 0%, #E8BA40 100%); color: #050505; font-weight: 600; text-decoration: none; }
+        .footer { padding: 20px 32px 32px; text-align: center; color: #6B7280; font-size: 13px; }
+        .footer a { color: #E8BA40; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Daily Watchlist</h1>
+            <p class="subtitle">{{date}}</p>
+        </div>
+        <div class="content">
+            <p class="salutation">Hi {{name}},</p>
+            <p style="margin: 0 0 12px; color: #D1D5DB; font-size: 15px;">
+                Here's a quick snapshot of the stocks in your Signalist watchlist.
+            </p>
+            {{watchlistContent}}
+            <a class="cta" href="{{dashboardUrl}}">Open Dashboard</a>
+        </div>
+        <div class="footer">
+            Sent with ❤ from Signalist • <a href="{{dashboardUrl}}">Visit Signalist</a>
+        </div>
+    </div>
+</body>
+</html>`;
+
 export const STOCK_ALERT_UPPER_EMAIL_TEMPLATE = `<!DOCTYPE html>
 <html lang="en">
 <head>

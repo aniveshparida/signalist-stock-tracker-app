@@ -23,3 +23,18 @@ export const getAllUsersForNewsEmail = async () => {
         return []
     }
 }
+
+export const findUserByEmail = async (email: string) => {
+    if (!email) return null;
+
+    const mongoose = await connectToDatabase();
+    const db = mongoose.connection.db;
+    if (!db) throw new Error('MongoDB connection not found');
+
+    const trimmedEmail = email.trim();
+    const escapedEmail = trimmedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    return await db.collection('user').findOne({
+        email: { $regex: `^${escapedEmail}$`, $options: 'i' },
+    });
+}

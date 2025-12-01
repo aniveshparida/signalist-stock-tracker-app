@@ -1,13 +1,13 @@
 'use client';
 
-import {useform} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {Button} from "@/components/ui/button";
 import InputField from "@/components/forms/InputField";
-import SelectField from "@/components/form/SelectField";
+import SelectField from "@/components/forms/SelectField";
 import {INVESTMENT_GOALS,PREFERRED_INDUSTRIES,RISK_TOLERANCE_OPTIONS} from "@/lib/constants";
 import {CountrySelectField} from "@/components/forms/CountrySelectField";
 import FooterLink from "@/components/forms/FooterLink";
-import {signUpWithEmail} from "@/lib/actions/auth.actions";
+import {signUpWithEmail} from "@/lib/actions/auth.action";
 import {useRouter}  from "next/navigation";
 import {toast} from "sonner";
 
@@ -20,7 +20,7 @@ const SignUp = ()=>{
         formState:{errors, isSubmitting},
     }=useForm<SignUpFormData>({
         defaultValues: {
-            fullName= '',
+            fullName: '',
             email: '',
             password: '',
             country: 'INDIA',
@@ -34,7 +34,15 @@ const SignUp = ()=>{
     const onSubmit =async (data: SignUpFormData) =>{
         try{
             const result =await signUpWithEmail(data);
-            if(result.success)router.push('/');
+            if(result.success){
+                toast.success('Account created successfully!');
+                router.push('/');
+                router.refresh();
+            } else {
+                toast.error('Sign up failed', {
+                    description: result.error || 'Failed to create an account'
+                });
+            }
         }catch(e){
             console.error(e);
             toast.error('Sign up failed',{

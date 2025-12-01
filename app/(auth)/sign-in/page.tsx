@@ -4,7 +4,7 @@ import {useForm} from 'react-hook-form'
 import {Button} from '@/components/ui/button';
 import InputField from '@/components/forms/InputField';
 import FooterLink from '@/components/forms/FooterLink';
-import {signInWithEmail,signUpWithEmail} from "@/lib/actions/auth.actions";
+import {signInWithEmail} from "@/lib/actions/auth.action";
 import {toast} from "sonner"
 import {signInEmail} from "better-auth/api";
 import {useRouter} from "next/navigation";
@@ -13,7 +13,7 @@ const SignIn =()=>{
     const router = useRouter();
     const{
         register,
-        handlesubmit,
+        handleSubmit,
         formState: {errors,isSubmitting},
     }=useForm<SignInFormData>({
         defaultValues:{
@@ -26,10 +26,23 @@ const SignIn =()=>{
     const onSubmit = async (data:SignInFormData) => {
         try{
             const result=await signInWithEmail(data);
-            if(result.success)router.push('/dashboard');
+            if(result.success){
+                toast.success('Signed in successfully!');
+                router.push('/');
+                router.refresh();
+            } else {
+                const message = result.errorCode === 'USER_NOT_FOUND'
+                    ? 'This account does not exist. Please sign up first.'
+                    : (result.error || 'Invalid email or password');
+                toast.error('Sign In failed', {
+                    description: message
+                });
+            }
         }catch(e){
             console.error(e);
-            toast.error('Sign In failed',{description:e instanceof Error ?e.message:'Failed to sign in'});
+            toast.error('Sign In failed',{
+                description:e instanceof Error ?e.message:'Failed to sign in'
+            });
         }
     }
 
@@ -43,7 +56,7 @@ const SignIn =()=>{
                  label="Email"
                  placeholder="contact@parida.com"
                  register={register}
-                 errors={errors.email}
+                 error={errors.email}
                  validation={{required:'Email is required',pattern:/^\w+@\w+\.\w+/}}
                 />
                 <InputField
@@ -59,7 +72,7 @@ const SignIn =()=>{
                 <Button type="submit" disabled={isSubmitting} className="yellow-btn w-full mt-5">
                     {isSubmitting?'Signing In':'Sign In'}
                 </Button>
-                <FooterLink text="Don't have an account?" LinkText="Create an account" href="/sign-up"/>
+                <FooterLink text="Don't have an account?" linkText="Create an account" href="/sign-up"/>
             </form>
         </>
     );

@@ -55,12 +55,6 @@ declare global {
         href: string;
     };
 
-    type SearchCommandProps = {
-        renderAs?: 'button' | 'text';
-        label?: string;
-        initialStocks: StockWithWatchlistStatus[];
-    };
-
     type WelcomeEmailData = {
         email: string;
         name: string;
@@ -109,6 +103,7 @@ declare global {
         showTrashIcon?: boolean;
         type?: 'button' | 'icon';
         onWatchlistChange?: (symbol: string, isAdded: boolean) => void;
+        userId?: string;
     };
 
     type QuoteData = {
@@ -148,6 +143,12 @@ declare global {
         peRatio?: string;
     };
 
+    type WatchlistDisplayItem = {
+        symbol: string;
+        company: string;
+        addedAt?: string;
+    };
+
     type AlertsListProps = {
         alertData: Alert[] | undefined;
     };
@@ -172,9 +173,10 @@ declare global {
         open?: boolean;
         setOpen?: (open: boolean) => void;
         renderAs?: 'button' | 'text';
-        buttonLabel?: string;
+        label?: string;
         buttonVariant?: 'primary' | 'secondary';
         className?: string;
+        initialStocks: StockWithWatchlistStatus[];
     };
 
     type AlertData = {

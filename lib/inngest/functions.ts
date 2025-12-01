@@ -1,9 +1,9 @@
 import {inngest} from "@/lib/inngest/client";
 import {NEWS_SUMMARY_EMAIL_PROMPT, PERSONALIZED_WELCOME_EMAIL_PROMPT} from "@/lib/inngest/prompts";
-import {sendNewsSummaryEmail, sendWelcomeEmail} from "@/lib/nodemailer";
-import {getAllUsersForNewsEmail} from "@/lib/actions/user.actions";
-import { getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.actions";
-import { getNews } from "@/lib/actions/finnhub.actions";
+import {sendNewsSummaryEmail, sendWatchlistDigestEmail, sendWelcomeEmail} from "@/lib/nodemailer";
+import {getAllUsersForNewsEmail} from "@/lib/actions/user.action";
+import { getWatchlistItemsByUserId, getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.action";
+import { getNews } from "@/lib/actions/finnhub.action";
 import { getFormattedTodayDate } from "@/lib/utils";
 
 export const sendSignUpEmail = inngest.createFunction(
@@ -117,4 +117,38 @@ export const sendDailyNewsSummary = inngest.createFunction(
     }
 )
 
+export const sendDailyWatchlistDigest = inngest.createFunction(
+    { id: 'daily-watchlist-digest' },
+    { cron: '0 12 * * *' },
+    async ({ step }) => {
+        const users = await step.run('get-watchlist-users', getAllUsersForNewsEmail);
 
+        if (!users || users.length === 0) {
+            return { success: false, message: 'No users available for watchlist digest' };
+        }
+
+        await step.run('send-watchlist-emails', async () => {
+            await Promise.all(
+                (users as UserForNewsEmail[]).map(async (user) => {
+                    try {
+                        const watchlist = await getWatchlistItemsByUserId(user.id);
+                        await sendWatchlistDigestEmail({
+                            email: user.email,
+                            name: user.name,
+                            watchlist: watchlist.map((item) => ({
+                                symbol: item.symbol,
+                                company: item.company,
+                                addedAt: item.addedAt?.toISOString(),
+                            })),
+                        });
+                        console.log(`[watchlist-digest] Sent to ${user.email} with ${watchlist.length} items`);
+                    } catch (error) {
+                        console.error('[watchlist-digest] Failed for', user.email, error);
+                    }
+                })
+            );
+        });
+
+        return { success: true, message: 'Watchlist digest emails queued' };
+    }
+)
