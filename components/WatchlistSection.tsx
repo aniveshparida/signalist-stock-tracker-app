@@ -1,10 +1,14 @@
+import { useState } from "react";
 import Link from "next/link";
+import SearchCommand from "@/components/SearchCommand";
+import { searchStocks } from "@/lib/actions/finnhub.action";
 
 type WatchlistSectionProps = {
     items: WatchlistDisplayItem[];
 };
 
-const WatchlistSection = ({ items }: WatchlistSectionProps) => {
+const WatchlistSection = async ({ items }: WatchlistSectionProps) => {
+    const initialStocks = await searchStocks();
     return (
         <section id="watchlist" className="w-full">
             <div className="watchlist-container bg-gray-800/40 border border-gray-700 rounded-2xl p-6 space-y-6">
@@ -13,9 +17,12 @@ const WatchlistSection = ({ items }: WatchlistSectionProps) => {
                         <p className="text-sm uppercase tracking-widest text-gray-500">Your Watchlist</p>
                         <h2 className="watchlist-title mt-1">Saved stocks</h2>
                     </div>
-                    <Link href="/search" className="add-alert">
-                        + Add more symbols
-                    </Link>
+                    <SearchCommand 
+                        renderAs="text" 
+                        label="+ Add more symbols" 
+                        initialStocks={initialStocks}
+                        className="add-alert"
+                    />
                 </div>
 
                 {items.length === 0 ? (
@@ -26,9 +33,12 @@ const WatchlistSection = ({ items }: WatchlistSectionProps) => {
                                 Use the search dialog or the “Add to Watchlist” buttons on any stock page. Your saved symbols
                                 will appear here for quick reference.
                             </p>
-                            <Link href="/search" className="add-alert">
-                                Search stocks
-                            </Link>
+                            <SearchCommand 
+                                renderAs="text" 
+                                label="Search stocks" 
+                                initialStocks={initialStocks}
+                                className="add-alert"
+                            />
                         </div>
                     </div>
                 ) : (
@@ -77,4 +87,3 @@ const WatchlistSection = ({ items }: WatchlistSectionProps) => {
 };
 
 export default WatchlistSection;
-

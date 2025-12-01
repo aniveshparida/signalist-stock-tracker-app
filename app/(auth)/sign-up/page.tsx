@@ -38,7 +38,7 @@ const SignUp = ()=>{
                 toast.success('Account created successfully!');
                 // Add a slight delay before redirecting to ensure auth state is updated
                 setTimeout(() => {
-                    router.push('/');
+                    router.push('/dashboard');
                     router.refresh();
                 }, 500);
             } else {

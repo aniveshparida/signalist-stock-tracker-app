@@ -28,6 +28,20 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
         return () => window.removeEventListener("keydown", onKeyDown)
     }, [])
 
+    // Auto-focus the search input when the dialog opens
+    useEffect(() => {
+        if (open) {
+            // Small delay to ensure the dialog is fully rendered
+            const timer = setTimeout(() => {
+                const searchInput = document.querySelector('.search-input input') as HTMLInputElement
+                if (searchInput) {
+                    searchInput.focus()
+                }
+            }, 100)
+            return () => clearTimeout(timer)
+        }
+    }, [open])
+
     const handleSearch = async () => {
         if(!isSearchMode) return setStocks(initialStocks);
 

@@ -37,20 +37,38 @@ export const signInWithEmail = async ({ email, password }: SignInFormData) => {
             return {
                 success: false,
                 errorCode: 'USER_NOT_FOUND',
-                error: 'This account does not exist. Please sign up first.'
+                error: 'User not registered. Please sign up first.'
             }
         }
 
-        const response = await auth.api.signInEmail({
-            body: { email: sanitizedEmail, password },
-            headers: await headers()
-        })
+        try {
+            const response = await auth.api.signInEmail({
+                body: { email: sanitizedEmail, password },
+                headers: await headers()
+            })
 
-        if(response && response.user) {
-            return { success: true, data: response }
+            if(response && response.user) {
+                return { success: true, data: response }
+            }
+
+            return { 
+                success: false, 
+                errorCode: 'INVALID_PASSWORD',
+                error: 'Incorrect password' 
+            }
+        } catch (authError: any) {
+            // Check if the error is related to invalid password
+            if (authError?.message?.includes('password') || 
+                authError?.error?.message?.includes('password')) {
+                return { 
+                    success: false, 
+                    errorCode: 'INVALID_PASSWORD',
+                    error: 'Incorrect password' 
+                }
+            }
+
+            throw authError; // Re-throw for the outer catch block
         }
-
-        return { success: false, error: 'Invalid email or password' }
     } catch (e: any) {
         console.error('Sign in failed', e)
         const errorMessage = e?.message || e?.error?.message || 'Invalid email or password'

@@ -30,13 +30,18 @@ const SignIn =()=>{
                 toast.success('Signed in successfully!');
                 // Add a slight delay before redirecting to ensure auth state is updated
                 setTimeout(() => {
-                    router.push('/');
+                    router.push('/dashboard');
                     router.refresh();
                 }, 500);
             } else {
-                const message = result.errorCode === 'USER_NOT_FOUND'
-                    ? 'This account does not exist. Please sign up first.'
-                    : (result.error || 'Invalid email or password');
+                let message = '';
+                if (result.errorCode === 'USER_NOT_FOUND') {
+                    message = 'User not registered. Please sign up first.';
+                } else if (result.errorCode === 'INVALID_PASSWORD') {
+                    message = 'Incorrect password';
+                } else {
+                    message = result.error || 'Invalid email or password';
+                }
                 toast.error('Sign In failed', {
                     description: message
                 });
