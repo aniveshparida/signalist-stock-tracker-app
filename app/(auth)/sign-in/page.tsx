@@ -6,7 +6,6 @@ import InputField from '@/components/forms/InputField';
 import FooterLink from '@/components/forms/FooterLink';
 import {signInWithEmail} from "@/lib/actions/auth.action";
 import {toast} from "sonner"
-import {signInEmail} from "better-auth/api";
 import {useRouter} from "next/navigation";
 
 const SignIn =()=>{
@@ -30,7 +29,7 @@ const SignIn =()=>{
                 toast.success('Signed in successfully!');
                 // Add a slight delay before redirecting to ensure auth state is updated
                 setTimeout(() => {
-                    router.push('/dashboard');
+                    router.push('/');
                     router.refresh();
                 }, 500);
             } else {
